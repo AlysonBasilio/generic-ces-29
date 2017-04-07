@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import Interfaces.*;
+
 import java.util.Properties;
+
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -27,6 +29,15 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
          props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
          props.put("mail.smtp.auth", "true");
          props.put("mail.smtp.port", "465");
+         
+
+ 		Session session = Session.getDefaultInstance(props,
+                 new javax.mail.Authenticator() {
+                      protected PasswordAuthentication getPasswordAuthentication() 
+                      {
+                            return new PasswordAuthentication("mateuscoelho2009@gmail.com", "ronaldo");
+                      }
+                 });
 	}
 	
 	public boolean initProcesso(Processo p)
@@ -68,27 +79,23 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
 		
 	}
 
-	
+	@Overrride
 	public boolean validateProcess(Processo proc) {
 		return proc.getID() > 0;
 	}
 
-	
+	@Override
 	public boolean sendEmail(String address) {
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
-
 	
 	public boolean addProcesso(Processo proc) {
 		processos.put(proc.getID(), proc);
 		return false;
 	}
-
 	
 	public Processo getProcesso(int id) {
 		return this.processos.get(id);
 	}
-	
-	
 }
