@@ -5,6 +5,7 @@ import java.util.Map;
 
 import Interfaces.*;
 import Mocks.MockBancoDeDados;
+import Mocks.MockServicoCarta;
 
 import java.util.Properties;
 
@@ -45,15 +46,18 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
  		session.setDebug(true);
 	}
 	
-	public boolean initProcesso(Processo p, BancoDeDados db)
+	public boolean initProcesso(Processo p, BancoDeDados db, ServicoCartas s)
 	{
 		boolean ok = checkProcesso(p);
 		if (ok)
 			persistProcesso(p, db);
 		sendInfoByEmail(p, ok);
+		sendInfoByLetter(p, ok, s);
 		return ok;
 	}
 	
+	
+
 	private boolean checkProcesso(Processo p)
 	{
 		return validateProcess(p);
@@ -83,6 +87,10 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
 	{
 		init ();
 		sendEmail (p.getEmail(), p, statusProcesso);
+	}
+	
+	private void sendInfoByLetter(Processo p, boolean ok, ServicoCartas s) {
+		s.sendCarta(p.getContent());
 	}
 
 	@Override
@@ -126,6 +134,7 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
 	public static void main(String[] args) {
 		Processo p = new Processo();
 		MockBancoDeDados mock = new MockBancoDeDados();
+		MockServicoCarta mockC = new MockServicoCarta();
 		
 		p.setContent("fhceiwuch");
 		p.setEmail("generic@gmail.com");
@@ -135,10 +144,9 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
 		
 		ControladorSIAPJ cont = new ControladorSIAPJ();
 		
-		cont.init();
-		cont.initProcesso(p, mock);
+		cont.initProcesso(p, mock, mockC);
 		
 		p.setID(-56);
-		cont.initProcesso(p, mock);
+		cont.initProcesso(p, mock, mockC);
 	}
 }
