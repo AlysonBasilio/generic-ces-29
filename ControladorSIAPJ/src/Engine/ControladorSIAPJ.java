@@ -59,7 +59,7 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
 	
 	private boolean checkProcesso(Processo p)
 	{
-		
+		return validateProcess(p);
 	}
 	
 	private Processo persistProcesso(Processo p)
@@ -75,6 +75,7 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return p;
 	}
 	
 	private void sendInfoByEmail(Processo p, boolean statusProcesso)
@@ -84,8 +85,7 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
 
 	@Override
 	public boolean validateProcess(Processo proc) {
-		// TODO Auto-generated method stub
-		return false;
+		return proc.getID() > 0;
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
 	}
 	
 	public boolean addProcesso(Processo proc) {
-		// TODO Auto-generated method stub
+		processos.put(proc.getID(), proc);
 		return false;
 	}
 	
