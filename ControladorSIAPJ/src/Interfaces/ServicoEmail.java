@@ -1,5 +1,7 @@
+package Interfaces;
+
+import Engine.Processo;
 
 public interface ServicoEmail {
-	public boolean addProcesso (Processo proc);
-	public Processo getProcesso (int id);
+	public boolean sendEmail (String address);
 }

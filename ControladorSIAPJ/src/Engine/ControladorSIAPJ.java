@@ -1,5 +1,7 @@
 package Engine;
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import Interfaces.*;
 
@@ -13,9 +15,11 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
+	
 public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, ValidadorProcesso {
+
 	private Properties props;
+	private Map<Integer, Processo> processos = new HashMap<Integer, Processo>();
 	
 	public void init () {
 		 props = new Properties();
@@ -46,6 +50,7 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
 		}
 		else
 			sendInfoByEmail(p, ok);
+		return ok;
 	}
 	
 	private boolean checkProcesso(Processo p)
@@ -55,13 +60,17 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
 	
 	private Processo persistProcesso(Processo p)
 	{
-		FileWriter out = new FileWriter("database/processos.txt", true); 
-		BufferedWriter bw = new BufferedWriter(out);
+		try {
+			FileWriter out = new FileWriter("database/processos.txt", true); 
+			BufferedWriter bw = new BufferedWriter(out);
 		
-		bw.write("-------------------------------------------------------------------------------------------------------");
-		bw.write("Processo " + p.getId() + "\n");
-		bw.write("Reclamante: " + p.getReclamante() + "\nTelefone: " + p.getTelefone() + "\nE-mail: " + p.getEmail() + "\n");
-		bw.write("Conteúdo:\n" + p.getConteudo() + "\n");
+			bw.write("-------------------------------------------------------------------------------------------------------");
+			bw.write("Processo " + p.getID() + "\n");
+			bw.write("Reclamante: " + p.getNomeReclamante() + "\nTelefone: " + p.getTelefone() + "\nE-mail: " + p.getEmail() + "\n");
+			bw.write("Conteúdo:\n" + p.getContent() + "\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void sendInfoByEmail(Processo p, boolean statusProcesso)
@@ -69,8 +78,8 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
 		
 	}
 
-	@Override
-	public boolean validateProcess(Interfaces.Processo proc) {
+	@Overrride
+	public boolean validateProcess(Processo proc) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -80,16 +89,13 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
 		
 		return false;
 	}
-
-	@Override
-	public boolean addProcesso(Interfaces.Processo proc) {
+	
+	public boolean addProcesso(Processo proc) {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	@Override
-	public Interfaces.Processo getProcesso(int id) {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public Processo getProcesso(int id) {
+		return this.processos.get(id);
 	}
 }
