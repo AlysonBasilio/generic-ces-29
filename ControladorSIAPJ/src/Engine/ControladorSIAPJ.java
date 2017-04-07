@@ -19,7 +19,9 @@ import javax.mail.internet.MimeMessage;
 public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, ValidadorProcesso {
 
 	private Properties props;
+	private Session session;
 	private Map<Integer, Processo> processos = new HashMap<Integer, Processo>();
+	String meuEmail = "xupadeputado@gmail.com";
 	
 	public void init () {
 		 props = new Properties();
@@ -31,25 +33,23 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
          props.put("mail.smtp.port", "465");
          
 
- 		Session session = Session.getDefaultInstance(props,
+ 		session = Session.getDefaultInstance(props,
                  new javax.mail.Authenticator() {
                       protected PasswordAuthentication getPasswordAuthentication() 
                       {
-                            return new PasswordAuthentication("mateuscoelho2009@gmail.com", "ronaldo");
+                            return new PasswordAuthentication(meuEmail, "xupadeputado1");
                       }
                  });
+ 		
+ 		session.setDebug(true);
 	}
 	
 	public boolean initProcesso(Processo p)
 	{
 		boolean ok = checkProcesso(p);
 		if (ok)
-		{
 			persistProcesso(p);
-			sendInfoByEmail(p, ok);
-		}
-		else
-			sendInfoByEmail(p, ok);
+		sendInfoByEmail(p, ok);
 		return ok;
 	}
 	
@@ -76,7 +76,8 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
 	
 	private void sendInfoByEmail(Processo p, boolean statusProcesso)
 	{
-		
+		init ();
+		sendEmail (p.getEmail(), p, statusProcesso);
 	}
 
 	@Override
@@ -85,9 +86,27 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
 	}
 
 	@Override
-	public boolean sendEmail(String address) {
+	public boolean sendEmail(String address, Processo proc, boolean status) {
+		try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(meuEmail)); //Remetente
+
+            String sucesso = "sucesso";
+            if (!status) sucesso = "falha";
+            
+            Address[] toUser = InternetAddress //Destinatário(s)
+                       .parse(address);
+            message.setRecipients(Message.RecipientType.TO, toUser);
+            message.setSubject("Retorno do processo");//Assunto
+            message.setText("Seu processo teve status de: " + sucesso + ".");
+            /**Método para enviar a mensagem criada*/
+            Transport.send(message);
+            System.out.println("Feito!!!");
+       } catch (MessagingException e) {
+            return false;
+      }
 		
-		return false;
+		return true;
 	}
 	
 	public boolean addProcesso(Processo proc) {
