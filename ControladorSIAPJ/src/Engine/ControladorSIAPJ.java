@@ -107,9 +107,9 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
             /**Método para enviar a mensagem criada*/
             Transport.send(message);
             System.out.println("Feito!!!");
-       } catch (MessagingException e) {
-            return false;
-      }
+		} catch (MessagingException e) {
+			return false;
+      	}
 		
 		return true;
 	}
