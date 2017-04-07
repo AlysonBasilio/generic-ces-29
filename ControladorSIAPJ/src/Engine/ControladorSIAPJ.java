@@ -1,6 +1,8 @@
+package Engine;
 import java.io.*;
+import Interfaces.*;
 
-public class ControladorSIAPJ {
+public class ControladorSIAPJ implements RepositorioProcessos, ServicoEmail, ValidadorProcesso{
 	public boolean initProcesso(Processo p)
 	{
 		boolean ok = checkProcesso(p);
