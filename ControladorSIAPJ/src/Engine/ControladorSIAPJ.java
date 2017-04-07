@@ -68,6 +68,7 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
 			bw.write("Processo " + p.getID() + "\n");
 			bw.write("Reclamante: " + p.getNomeReclamante() + "\nTelefone: " + p.getTelefone() + "\nE-mail: " + p.getEmail() + "\n");
 			bw.write("Conteúdo:\n" + p.getContent() + "\n");
+			bw.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -116,5 +117,22 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
 	
 	public Processo getProcesso(int id) {
 		return this.processos.get(id);
+	}
+	
+	public static void main(String[] args) {
+		Processo p = new Processo();
+		p.setContent("fhceiwuch");
+		p.setEmail("alyson.basilio@gmail.com");
+		p.setID(36);
+		p.setNomeReclamante("Zina");
+		p.setTelefone("98399839");
+		
+		ControladorSIAPJ cont = new ControladorSIAPJ();
+		
+		cont.init();
+		cont.initProcesso(p);
+		
+		p.setID(-56);
+		cont.initProcesso(p);
 	}
 }
