@@ -48,12 +48,8 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
 	{
 		boolean ok = checkProcesso(p);
 		if (ok)
-		{
 			persistProcesso(p);
-			sendInfoByEmail(p, ok);
-		}
-		else
-			sendInfoByEmail(p, ok);
+		sendInfoByEmail(p, ok);
 		return ok;
 	}
 	
@@ -80,7 +76,8 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
 	
 	private void sendInfoByEmail(Processo p, boolean statusProcesso)
 	{
-		
+		init ();
+		sendEmail (p.getEmail(), p, statusProcesso);
 	}
 
 	@Override
@@ -89,16 +86,19 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
 	}
 
 	@Override
-	public boolean sendEmail(String address) {
+	public boolean sendEmail(String address, Processo proc, boolean status) {
 		try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(meuEmail)); //Remetente
 
+            String sucesso = "sucesso";
+            if (!status) sucesso = "falha";
+            
             Address[] toUser = InternetAddress //Destinatário(s)
-                       .parse(address);  
+                       .parse(address);
             message.setRecipients(Message.RecipientType.TO, toUser);
-            message.setSubject("Enviando email com JavaMail");//Assunto
-            message.setText("Enviei este email utilizando JavaMail com minha conta GMail!");
+            message.setSubject("Retorno do processo");//Assunto
+            message.setText("Seu processo teve status de: " + sucesso + ".");
             /**Método para enviar a mensagem criada*/
             Transport.send(message);
             System.out.println("Feito!!!");
