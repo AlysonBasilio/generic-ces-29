@@ -79,7 +79,7 @@ public class ControladorSIAPJ implements ServicoEmail, RepositorioProcessos, Val
 		
 	}
 
-	@Overrride
+	@Override
 	public boolean validateProcess(Processo proc) {
 		return proc.getID() > 0;
 	}
